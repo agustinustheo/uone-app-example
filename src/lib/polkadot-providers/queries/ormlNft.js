@@ -2,7 +2,7 @@ export async function queryClassByClassId(
   api,
   classId,
 ) {
-  return (await api.query.ormlNft.classes(classId)).toHuman();
+  return (await api.query.ormlNFT.classes(classId)).toHuman();
 }
 
 export async function queryTokenByClassIdAndTokenId(
@@ -10,7 +10,7 @@ export async function queryTokenByClassIdAndTokenId(
     classId,
     tokenId
 ) {
-  return (await api.query.ormlNft.tokens(classId, tokenId)).toHuman();
+  return (await api.query.ormlNFT.tokens(classId, tokenId)).toHuman();
 }
 
 export async function queryTokenByOwner(
@@ -19,5 +19,18 @@ export async function queryTokenByOwner(
     classId,
     tokenId
 ) {
-  return (await api.query.ormlNft.tokens(accountId, (classId, tokenId))).toHuman();
+  return (await api.query.ormlNFT.tokens(accountId, (classId, tokenId))).toHuman();
+}
+
+export async function queryNextClassId(
+    api,
+) {
+  return (await api.query.ormlNFT.nextClassId()).toHuman();
+}
+
+export async function queryNextTokenId(
+    api,
+    tokenId,
+) {
+  return (await api.query.ormlNFT.nextTokenId(tokenId)).toHuman();
 }

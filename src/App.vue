@@ -186,6 +186,20 @@
         </fieldset>
       </form>
     </div>
+    <div class="row">
+      <div class="form-horizontal col">
+        <legend>Data</legend>
+        <div v-for="c in classes" :key="c.id">
+          <h5>Full Class JSON: </h5>
+          <h6> {{ c }}</h6>
+          <br/>
+          <div v-for="t in c.tokens" :key="t.id">
+            <h6>Full Token JSON: <br/> {{ t }}</h6>
+          </div>
+          <br/>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -195,7 +209,7 @@ import { Keyring } from "@polkadot/keyring"
 import { ApiPromise, WsProvider } from "@polkadot/api"
 
 // eslint-disable-next-line
-import { queryClassByClassId, queryTokenByClassIdAndTokenId, queryTokenByOwner } from "@/lib/polkadot-providers/queries/ormlNft"
+import { queryNextClassId, queryNextTokenId, queryClassByClassId, queryTokenByClassIdAndTokenId } from "@/lib/polkadot-providers/queries/ormlNft"
 import { createClass, proxyMint, transfer, burn } from "@/lib/polkadot-providers/commands/unetNft"
 
 export default {
@@ -221,7 +235,8 @@ export default {
     tokenQuantity: '',
     classIdBurn: '',
     tokenIdBurn: '',
-    tokenQuantityBurn: ''
+    tokenQuantityBurn: '',
+    classes: []
   }),
   
   async mounted() {
@@ -233,9 +248,29 @@ export default {
 
     const keyring = new Keyring({ type: 'sr25519' });
     this.pair = keyring.addFromUri('//Alice', { name: 'Alice default' });
+
+    await this.getData();
   },
 
   methods: {
+    async getData() {
+      this.classes = [];
+      const nextClassId = await queryNextClassId(this.api);
+
+      for(let i = 1; i < nextClassId; i++) {
+        const classObj = await queryClassByClassId(this.api, i);
+        classObj.tokens = [];
+        const nextTokenId = await queryNextTokenId(this.api, i);
+
+        for (let j = 0; j < nextTokenId; j++) {
+          const token = await queryTokenByClassIdAndTokenId(this.api, i, j);
+          classObj.tokens.push(token);
+        }
+
+        this.classes.push(classObj);
+      }
+    },
+
     async createClass(e) {
       e.preventDefault();
       await createClass(
@@ -247,8 +282,9 @@ export default {
         this.royalty,
         this.property,
         this.categoryId,
-        () => {
+        async () => {
           alert('Class created!')
+          await this.getData();
         }
       )
     },
@@ -263,8 +299,9 @@ export default {
         this.metadataMint,
         this.quantity,
         this.chargeRoyalty,
-        () => {
+        async () => {
           alert('Finished minting!')
+          await this.getData();
         }
       )
     },
@@ -280,8 +317,9 @@ export default {
           this.tokenIdTransfer,
           this.tokenQuantity
         ),
-        () => {
+        async () => {
           alert('Finished transfer!')
+          await this.getData(); 
         }
       )
     },
@@ -294,8 +332,9 @@ export default {
         this.classIdBurn,
         this.tokenIdBurn,
         this.tokenQuantityBurn,
-        () => {
+        async () => {
           alert('Finished burn!')
+          await this.getData();
         }
       )
     }
