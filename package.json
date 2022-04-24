@@ -8,6 +8,8 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@polkadot/api": "^8.1.1",
+    "@polkadot/ui-keyring": "^2.0.1",
     "core-js": "^3.8.3",
     "vue": "^2.6.14"
   },
