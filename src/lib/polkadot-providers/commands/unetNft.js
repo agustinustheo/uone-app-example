@@ -1,4 +1,4 @@
-import { successCallback } from "./index";
+import { extrinsicCallback } from "./index";
 
 export async function createClass(
   api,
@@ -9,10 +9,12 @@ export async function createClass(
   royaltyRate,
   property,
   categoryIds,
-  callback = () => {},
+  successCallback = () => {},
 ) {
-  var unsub = await api.tx.unetNft.createClass(metadata, name, description, royaltyRate, property, [categoryIds]).signAndSend(pair, { nonce: -1 }, ({ events, status }) => {
-    successCallback(api, { events, status, callback, unsub });
+  return new Promise((resolve, reject) => {
+    var unsub = api.tx.unetNft.createClass(metadata, name, description, royaltyRate, property, [categoryIds]).signAndSend(pair, { nonce: -1 }, ({ events, status }) => {
+      extrinsicCallback(api, { events, status, successCallback, resolve, reject, unsub });
+    });
   });
 }
 
@@ -24,10 +26,12 @@ export async function proxyMint(
     metadata, 
     quantity,
     chargeRoyalty,
-    callback = () => {},
+    successCallback = () => {},
 ) {
-  var unsub = await api.tx.unetNft.proxyMint(to, classId, metadata, quantity, chargeRoyalty).signAndSend(pair, { nonce: -1 }, ({ events, status }) => {
-    successCallback(api, { events, status, callback, unsub });
+  return new Promise((resolve, reject) => {
+    var unsub = api.tx.unetNft.proxyMint(to, classId, metadata, quantity, chargeRoyalty).signAndSend(pair, { nonce: -1 }, ({ events, status }) => {
+      extrinsicCallback(api, { events, status, successCallback, resolve, reject, unsub });
+    });
   });
 }
 
@@ -37,10 +41,12 @@ export async function burn(
     classId,
     tokenId,
     quantity,
-    callback = () => {},
+    successCallback = () => {},
 ) {
-  var unsub = await api.tx.unetNft.burn(classId, tokenId, quantity).signAndSend(pair, { nonce: -1 }, ({ events, status }) => {
-    successCallback(api, { events, status, callback, unsub });
+  return new Promise((resolve, reject) => {
+    var unsub = api.tx.unetNft.burn(classId, tokenId, quantity).signAndSend(pair, { nonce: -1 }, ({ events, status }) => {
+      extrinsicCallback(api, { events, status, successCallback, resolve, reject, unsub });
+    });
   });
 }
 
@@ -49,10 +55,12 @@ export async function destroyClass(
     pair,
     classId,
     dest,
-    callback = () => {},
+    successCallback = () => {},
 ) {
-  var unsub = await api.tx.unetNft.destroyClass(classId, dest).signAndSend(pair, { nonce: -1 }, ({ events, status }) => {
-    successCallback(api, { events, status, callback, unsub });
+  return new Promise((resolve, reject) => {
+    var unsub = api.tx.unetNft.destroyClass(classId, dest).signAndSend(pair, { nonce: -1 }, ({ events, status }) => {
+      extrinsicCallback(api, { events, status, successCallback, resolve, reject, unsub });
+    });
   });
 }
 
@@ -61,9 +69,11 @@ export async function transfer(
     pair,
     to,
     items,
-    callback = () => {},
+    successCallback = () => {},
 ) {
-  var unsub = await api.tx.unetNft.transfer(to, items).signAndSend(pair, { nonce: -1 }, ({ events, status }) => {
-    successCallback(api, { events, status, callback, unsub });
+  return new Promise((resolve, reject) => {
+    var unsub = api.tx.unetNft.transfer(to, items).signAndSend(pair, { nonce: -1 }, ({ events, status }) => {
+      extrinsicCallback(api, { events, status, successCallback, resolve, reject, unsub });
+    });
   });
 }
