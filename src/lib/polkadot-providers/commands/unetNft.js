@@ -77,3 +77,34 @@ export async function transfer(
     });
   });
 }
+
+export async function updateTokenRoyalty(
+    api,
+    pair,
+    classId,
+    tokenId,
+    chargeRoyalty,
+    successCallback = () => {},
+) {
+  return new Promise((resolve, reject) => {
+    var unsub = api.tx.unetNft.updateTokenRoyalty(classId, tokenId, chargeRoyalty).signAndSend(pair, { nonce: -1 }, ({ events, status }) => {
+      extrinsicCallback(api, { events, status, successCallback, resolve, reject, unsub });
+    });
+  });
+}
+
+export async function updateTokenRoyaltyBeneficiary(
+    api,
+    pair,
+    classId,
+    tokenId,
+    to,
+    accountId,
+    successCallback = () => {},
+) {
+  return new Promise((resolve, reject) => {
+    var unsub = api.tx.unetNft.updateTokenRoyaltyBeneficiary(classId, tokenId, to, accountId).signAndSend(pair, { nonce: -1 }, ({ events, status }) => {
+      extrinsicCallback(api, { events, status, successCallback, resolve, reject, unsub });
+    });
+  });
+}
